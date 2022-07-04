@@ -22,14 +22,14 @@ class Car(TimeStampModel):
 
 class InsuranceHistory(models.Model):
     car     = models.ForeignKey('cars.Car', on_delete = models.CASCADE)
-    hsitory = models.CharField(max_length = 50)
+    history = models.CharField(max_length = 50)
 
     class Meta:
         db_table = 'insurance_histories'
 
 class TransactionHistory(models.Model):
     car     = models.ForeignKey('cars.Car', on_delete = models.CASCADE)
-    hsitory = models.CharField(max_length = 50)
+    history = models.CharField(max_length = 50)
 
     class Meta:
         db_table = 'transaction_histories'

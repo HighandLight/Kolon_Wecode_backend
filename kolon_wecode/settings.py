@@ -56,7 +56,9 @@ INSTALLED_APPS = [
     'users',
     'dealers',
     'cars',
-    'notifications',]
+    'notifications',
+    'testcar',
+]
 
 
 MIDDLEWARE = [
