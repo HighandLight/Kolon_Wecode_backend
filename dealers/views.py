@@ -1,9 +1,11 @@
 import json
 import re
 import bcrypt
+import jwt
 
 from django.http  import JsonResponse
 from django.views import View
+from kolon_wecode.settings  import SECRET_KEY, ALGORITHM
 
 from dealers.models import Dealer
 
@@ -34,3 +36,29 @@ class SignUpView(View):
             
         except KeyError:
             return JsonResponse({'Message' : 'KeyError'}, status=400)
+
+class LoginView(View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body) 
+            
+            dealer_id       = data['id']
+            dealer_password = data['password']
+            
+            dealer = Dealer.objects.get(dealer_id = dealer_id)
+            
+            if not bcrypt.checkpw(dealer_password.encode('utf-8'), dealer.dealer_password.encode('utf-8')):
+                return JsonResponse({'Message': 'INVALID_PASSWORD'}, status = 401)
+            
+            access_token = jwt.encode({'id' : dealer.id}, SECRET_KEY, ALGORITHM)
+            
+            return JsonResponse({
+                'Message'      : 'SUCCESS',
+                'Access_token' : access_token
+            }, status=200)
+            
+        except KeyError: 
+            return JsonResponse({'Message': 'KeyError'}, status = 400)
+        
+        except Dealer.DoesNotExist:
+            return JsonResponse({'Message': 'INVALID_ID'}, status = 404)
