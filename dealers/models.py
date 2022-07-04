@@ -19,4 +19,4 @@ class Branch(TimeStampModel):
     longtitude = models.DecimalField(max_digits = 6, decimal_places = 6, default = 0)
 
     class Meta:
-        db_table = 'branchs'
+        db_table = 'branches'

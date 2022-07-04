@@ -47,7 +47,7 @@ class Estimate(TimeStampModel):
     electric_seat            = models.BooleanField()
     smart_key                = models.BooleanField()
     leather_seat             = models.BooleanField()
-    electric_folding_mirrort = models.BooleanField()
+    electric_folding_mirror  = models.BooleanField()
     accident_status          = models.BooleanField()
     spare_key                = models.IntegerField()
     wheel_scratch            = models.IntegerField()
