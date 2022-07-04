@@ -23,22 +23,22 @@ class CarInformationView(View):
             cars = TestCar.objects.filter(number = number, owner = owner)
             
             results = [{
-                    'number':car.number,
-                    'owner':car.owner,
-                    'manufacturer':car.manufacturer,
-                    'car_name':car.car_name,
-                    'trim':car.trim,
-                    'body_shape':car.body_shape,
-                    'color':car.color,
-                    'model_year':car.model_year,
-                    'first_registration_year':car.first_registration_year,
-                    'mileage':car.mileage,
-                    'engine':car.engine,
-                    'transmission':car.transmission,
-                    'factory_price':car.factory_price,
-                    'transaction_price':car.transaction_price,
-                    'test_insurance_history' : [history.history for history in car.testinsurancehistory_set.all()],
-                    'test_transaction_history' : [history.history for history in car.testtransactionhistory_set.all()]
+                'number':car.number,
+                'owner':car.owner,
+                'manufacturer':car.manufacturer,
+                'car_name':car.car_name,
+                'trim':car.trim,
+                'body_shape':car.body_shape,
+                'color':car.color,
+                'model_year':car.model_year,
+                'first_registration_year':car.first_registration_year,
+                'mileage':car.mileage,
+                'engine':car.engine,
+                'transmission':car.transmission,
+                'factory_price':car.factory_price,
+                'transaction_price':car.transaction_price,
+                'test_insurance_history' : [history.history for history in car.testinsurancehistory_set.all()],
+                'test_transaction_history' : [history.history for history in car.testtransactionhistory_set.all()]
             }for car in cars]
             
             return JsonResponse({"results": results}, status=200)
@@ -100,6 +100,26 @@ class CarInformationView(View):
         
         except transaction.TransactionManagementError:
             return JsonResponse({'message': 'TransactionManagementError'}, status=400)
+        
+        except KeyError: 
+            return JsonResponse({'Message' : 'KEY_ERROR'}, status=400)
+
+class CarMarketPriceView(View):
+    @login_decorator
+    def get(self, request): 
+        try :
+            data     = json.loads(request.body)
+            car_name = data['car_name']
+            trim     = data['trim']
+            
+            cars = TestCar.objects.filter(car_name = car_name, trim = trim)
+            
+            results = [{
+                'model_year': car.model_year,
+                'price'     : car.transaction_price,
+            }for car in cars]
+
+            return JsonResponse({"results": results}, status=200)
         
         except KeyError: 
             return JsonResponse({'Message' : 'KEY_ERROR'}, status=400)
