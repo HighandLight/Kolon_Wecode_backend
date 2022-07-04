@@ -2,14 +2,15 @@ import json
 from json.decoder import JSONDecodeError
 
 from django.http  import JsonResponse
+from django.db import transaction
 from django.views import View
 
-from cores.utils import admin_login_decorator
-from cars.models import Car
+from cores.utils import login_decorator
+from cars.models import Car, InsuranceHistory, TransactionHistory
 from testcar.models import TestCar
 
 class CarInformationView(View):
-    @admin_login_decorator
+    @login_decorator
     def get(self, request): 
         try :
             data   = json.loads(request.body)
@@ -44,3 +45,61 @@ class CarInformationView(View):
         
         except KeyError: 
             return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
+
+    @login_decorator
+    def post(self, request):
+        try :
+            data                    = json.loads(request.body)
+            user                    = request.user
+            number                  = data['number']
+            owner                   = data['owner']
+            car_name                = data['car_name']
+            trim                    = data['trim']
+            body_shape              = data['body_shape']
+            color                   = data['color']
+            model_year              = data['model_year']
+            first_registration_year = data['first_registration_year']
+            engine                  = data['engine']
+            transmission            = data['transmission']
+            manufacturer            = data['manufacturer']
+            factory_price           = data['factory_price']
+            insurance_history       = data['insurance_history']
+            transaction_history     = data['transaction_history']
+            
+            if Car.objects.filter(user = user, number = number).exists():
+                return JsonResponse({'message' : 'THE_CAR_NUMBER_ALREADY_EXISTS'}, status=404)
+            
+            with transaction.atomic():
+                car = Car.objects.create(
+                    user                    = user,
+                    number                  = number,
+                    owner                   = owner,
+                    car_name                = car_name,
+                    trim                    = trim,
+                    body_shape              = body_shape,
+                    color                   = color,
+                    model_year              = model_year,
+                    first_registration_year = first_registration_year,
+                    engine                  = engine,
+                    transmission            = transmission,
+                    manufacturer            = manufacturer,
+                    factory_price           = factory_price,
+                )
+                for insurance_history in insurance_history:
+                    InsuranceHistory.objects.create(
+                        car     = car,
+                        history = insurance_history,
+                    )
+                for transaction_history in transaction_history:
+                    TransactionHistory.objects.create(
+                        car     = car,
+                        history = transaction_history,
+                    )
+                
+                return JsonResponse({'Message': 'SUCCESS'}, status=200)
+        
+        except transaction.TransactionManagementError:
+            return JsonResponse({'message': 'TransactionManagementError'}, status=400)
+        
+        except KeyError: 
+            return JsonResponse({'Message' : 'KEY_ERROR'}, status=400)
