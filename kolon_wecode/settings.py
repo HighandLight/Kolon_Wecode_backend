@@ -1,14 +1,48 @@
+import os
+import pymysql
+import environ
+
 from pathlib import Path
-from my_settings import SECRET_KEY, DATABASES
+
+pymysql.install_as_MySQLdb()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = True
+env = environ.Env(
+    # set casting(type), default value
+    DEBUG=(bool, False),
+    SECRET_KEY=(str, 'SECRET_KEY'),
+    BASE_URL=(str, 'localhost:8000'),
+    ALLOWED_HOSTS=(list, []),
+    DB_NAME=(str, 'DB_NAME'),
+    DB_USER=(str, 'DB_USER'),
+    DB_PASSWORD=(str, 'DB_PASSWORD'),
+    DB_HOST=(str, 'DB_HOST'),
+    DB_PORT=(int, 'DB_PORT'),
+)
 
-ALLOWED_HOSTS = ['*']
+environ.Env.read_env(
+    env_file=os.path.join(BASE_DIR, '.env')
+)
 
-SECRET_KEY = SECRET_KEY
-DATABASES  = DATABASES
+ALGORITHM = env('ALGORITHM')
+
+SECRET_KEY = env('SECRET_KEY')
+
+DEBUG = env('DEBUG')
+
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env("DB_NAME"),
+        'USER': env("DB_USER"),
+        'PASSWORD': env("DB_PASSWORD"),
+        'HOST': env("DB_HOST"),
+        'PORT': env.int("DB_PORT")
+    }
+}
 
 INSTALLED_APPS = [
     # 'django.contrib.admin',
@@ -73,16 +107,22 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
+
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S' 
 
 USE_I18N = True
 
-USE_TZ = True
+USE_L10N = True
+
+USE_TZ = False
 
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# REMOVE_APPEND_SLASH_WARNING
+APPEND_SLASH = False
 
 ##CORS
 CORS_ORIGIN_ALLOW_ALL=True   #모든 cors 관련 요청에 대해 열어두겠다. 
