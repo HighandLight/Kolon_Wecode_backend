@@ -15,8 +15,9 @@ class Dealer(TimeStampModel):
 class Branch(TimeStampModel):
     name       = models.CharField(max_length = 100)
     address    = models.CharField(max_length = 200)
+
     latitude   = models.DecimalField(max_digits = 10, decimal_places = 6, default = 0)
     longtitude = models.DecimalField(max_digits = 10, decimal_places = 6, default = 0)
 
     class Meta:
-        db_table = 'branchs'
+        db_table = 'branches'

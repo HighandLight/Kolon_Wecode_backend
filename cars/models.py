@@ -3,33 +3,33 @@ from django.db import models
 from cores.models import TimeStampModel
 
 class Car(TimeStampModel):
-    user = models.ForeignKey('users.User', on_delete = models.CASCADE)
-    owner = models.CharField(max_length = 100)
-    number = models.CharField(max_length = 15)
-    car_name = models.CharField(max_length = 50)
-    trim = models.CharField(max_length = 50)
-    body_shape = models.CharField(max_length = 50)
-    color = models.CharField(max_length = 50)
-    model_year = models.CharField(max_length = 50)
+    user                    = models.ForeignKey('users.User', on_delete = models.CASCADE)
+    owner                   = models.CharField(max_length = 100)
+    number                  = models.CharField(max_length = 15)
+    car_name                = models.CharField(max_length = 50)
+    trim                    = models.CharField(max_length = 50)
+    body_shape              = models.CharField(max_length = 50)
+    color                   = models.CharField(max_length = 50)
+    model_year              = models.CharField(max_length = 50)
     first_registration_year = models.CharField(max_length = 50)
-    engine = models.CharField(max_length = 50)
-    transmission = models.CharField(max_length = 50)
-    manufacturer = models.CharField(max_length = 50)
-    factory_price = models.BigIntegerField()
+    engine                  = models.CharField(max_length = 50)
+    transmission            = models.CharField(max_length = 50)
+    manufacturer            = models.CharField(max_length = 50)
+    factory_price           = models.BigIntegerField()
 
     class Meta:
         db_table = 'cars'
 
 class InsuranceHistory(models.Model):
-    car = models.ForeignKey('cars.Car', on_delete = models.CASCADE)
-    hsitory = models.CharField(max_length = 50)
+    car     = models.ForeignKey('cars.Car', on_delete = models.CASCADE)
+    history = models.CharField(max_length = 50)
 
     class Meta:
         db_table = 'insurance_histories'
 
 class TransactionHistory(models.Model):
-    car = models.ForeignKey('cars.Car', on_delete = models.CASCADE)
-    hsitory = models.CharField(max_length = 50)
+    car     = models.ForeignKey('cars.Car', on_delete = models.CASCADE)
+    history = models.CharField(max_length = 50)
 
     class Meta:
         db_table = 'transaction_histories'
@@ -47,7 +47,7 @@ class Estimate(TimeStampModel):
     electric_seat            = models.BooleanField()
     smart_key                = models.BooleanField()
     leather_seat             = models.BooleanField()
-    electric_folding_mirrort = models.BooleanField()
+    electric_folding_mirror  = models.BooleanField()
     accident_status          = models.BooleanField()
     spare_key                = models.IntegerField()
     wheel_scratch            = models.IntegerField()
@@ -59,9 +59,9 @@ class Estimate(TimeStampModel):
         db_table = 'estimates'
 
 class EstimateCarImage(models.Model):
-    estimate = models.ForeignKey('cars.Estimate', on_delete = models.CASCADE)
+    estimate   = models.ForeignKey('cars.Estimate', on_delete = models.CASCADE)
     image_info = models.CharField(max_length = 200)
-    image = models.CharField(max_length = 200)
+    image      = models.CharField(max_length = 200)
 
     class Meta:
         db_table = 'estimate_car_images'
